@@ -1,0 +1,127 @@
+entrypoints Program, Stm, Exp ;
+
+Progr.  Program ::= [Dec] [Stm];
+
+(:[]).    [Dec] ::= Dec;
+(:).      [Dec] ::= Dec [Dec]; 
+
+Variable.   Dec ::= Variable_dec ";" ;
+Function.	Dec ::= Function_dec; 
+
+OnlyDecl.	Variable_dec ::= Type_specifier Ident ;
+ArrayDecl.  Variable_dec ::= Type_specifier [ArrayDim] Ident ;
+InitDecl.	Variable_dec ::= Type_specifier Ident "=" Exp2;
+
+FunNoParams.			Function_dec ::= Type_specifier Ident "(" ")" Compound_stm;
+FunNoParamsArray.		Function_dec ::= Type_specifier [ArraySign] Ident "(" ")" Compound_stm;
+FunWithParams.			Function_dec ::= Type_specifier Ident "(" [Parameter] ")" Compound_stm;
+FunWithParamsArray.		Function_dec ::= Type_specifier [ArraySign] Ident "(" [Parameter] ")" Compound_stm;
+
+Tvoid.        Type_specifier ::= "void";
+Tbool.        Type_specifier ::= "bool";
+Tint.         Type_specifier ::= "int";
+
+ArrayDec.		ArrayDim ::= "[" Exp "]";
+
+(:[]).		[ArrayDim] ::= ArrayDim;
+(:).		[ArrayDim] ::= ArrayDim [ArrayDim];
+
+Param.			Parameter ::= Type_specifier Ident ;
+ParamArray.		Parameter ::= Type_specifier [ArraySign] Ident ;
+
+(:[]).		[Parameter] ::= Parameter ;                   
+(:).		[Parameter] ::= Parameter "," [Parameter] ;
+
+ArraySIGN.	ArraySign ::= "[]" ;
+
+(:[]).		[ArraySign] ::= ArraySign ;
+(:).		[ArraySign] ::= ArraySign [ArraySign] ;
+
+OnlyType.      Parameter_declaration ::= Type_specifier ;
+
+CompS.    Stm ::= Compound_stm ;
+ExprS.    Stm ::= Exp ;
+SelS.     Stm ::= Selection_stm ;
+IterS.    Stm ::= Iter_stm ;
+JumpS.    Stm ::= "return" Exp ;
+PrintS.	  Stm ::= "print" Exp ;
+
+ScompOne.   Compound_stm ::= "{" "}" ;
+ScompTwo.   Compound_stm ::= "{" [Stm] "}" ;
+ScompFour.  Compound_stm ::= "{" [Dec] [Stm] "}" ;
+
+SselOne.    Selection_stm ::= "if" "(" Exp ")" Stm ;
+SselTwo.    Selection_stm ::= "if" "(" Exp ")" Stm "else" Stm ;
+
+SiterOne.   Iter_stm ::= "while" "(" Exp ")" Stm; --TODO sredniki
+SiterFour.  Iter_stm ::= "for" "(" Exp Exp Exp ")" Stm;
+
+(:[]).   [Stm] ::= Stm ;
+(:).     [Stm] ::= Stm [Stm];
+
+Eassign.     Exp2  ::= Exp15 Assignment_op Exp2;
+Elor.        Exp4  ::= Exp4 "||" Exp5;
+Eland.       Exp5  ::= Exp5 "&&" Exp6;
+Eeq.         Exp9  ::= Exp9 "==" Exp10;
+Eneq.        Exp9  ::= Exp9 "!=" Exp10;
+Elthen.      Exp10 ::= Exp10 "<" Exp11;
+Egrthen.     Exp10 ::= Exp10 ">" Exp11;
+Ele.         Exp10 ::= Exp10 "<=" Exp11;
+Ege.         Exp10 ::= Exp10 ">=" Exp11;
+Eplus.       Exp12 ::= Exp12 "+" Exp13;
+Eminus.      Exp12 ::= Exp12 "-" Exp13;
+Etimes.      Exp13 ::= Exp13 "*" Exp14;
+Ediv.        Exp13 ::= Exp13 "/" Exp14;
+Emod.        Exp13 ::= Exp13 "%" Exp14;
+Epreinc.     Exp15 ::= "++" Exp15;
+Epredec.     Exp15 ::= "--" Exp15;
+Epreop.      Exp15 ::= Unary_operator Exp14;
+Efunk.       Exp16 ::= Exp16 "(" ")";
+Efunkpar.    Exp16 ::= Exp16 "(" [Exp2] ")";
+Epostinc.    Exp16 ::= Exp16 "++";
+Epostdec.    Exp16 ::= Exp16 "--";
+Evar.        Exp17 ::= Ident;
+Earray.		 Exp17 ::= Ident [ArrayDim];
+Econst.      Exp17 ::= Constant;
+
+Eint.		Constant ::= Integer;
+Eboolean.	Constant ::= Boolean;
+
+Etrue.		Boolean ::= "true";
+Efalse.		Boolean ::= "false";
+
+_. Exp   ::= Exp2 ;
+_. Exp2  ::= Exp3 ;
+_. Exp3  ::= Exp4 ;
+_. Exp4  ::= Exp5 ;
+_. Exp5  ::= Exp6 ;
+_. Exp6  ::= Exp7 ;
+_. Exp7  ::= Exp8 ;
+_. Exp8  ::= Exp9 ;
+_. Exp9  ::= Exp10 ;
+_. Exp10 ::= Exp11 ;
+_. Exp11 ::= Exp12 ;
+_. Exp12 ::= Exp13 ;
+_. Exp13 ::= Exp14 ;
+_. Exp14 ::= Exp15 ;
+_. Exp15 ::= Exp16 ;
+_. Exp16 ::= Exp17 ;
+_. Exp17 ::= "(" Exp ")" ;
+
+
+Negative.    Unary_operator ::= "-" ;
+Logicalneg.  Unary_operator ::= "!" ;
+
+(:[]).   [Exp2] ::= Exp2 ;
+(:).     [Exp2] ::= Exp2 "," [Exp2];
+
+Assign.       Assignment_op ::= "=" ;
+AssignMul.    Assignment_op ::= "*=" ;
+AssignDiv.    Assignment_op ::= "/=" ;
+AssignMod.    Assignment_op ::= "%=" ;
+AssignAdd.    Assignment_op ::= "+=" ;
+AssignSub.    Assignment_op ::= "-=" ;
+
+comment "/*" "*/" ;
+comment "//";
+comment "#";
